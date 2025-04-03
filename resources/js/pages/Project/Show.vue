@@ -221,11 +221,11 @@ const completionPercentage = computed(() => {
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 class="text-sm font-medium  mb-2">Descrição</h3>
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Descrição</h3>
               <p class="">{{ project.description || 'Sem descrição' }}</p>
               
               <div class="mt-6">
-                <h3 class="text-sm font-medium  mb-2">Datas</h3>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">Datas</h3>
                 <div class="flex items-center text-sm  mb-2">
                   <CalendarDays class="h-4 w-4 mr-2" />
                   <span>Início: {{ formatDate(project.start_date) }}</span>
@@ -238,14 +238,14 @@ const completionPercentage = computed(() => {
             </div>
             
             <div>
-              <h3 class="text-sm font-medium  mb-2">Progresso</h3>
+              <h3 class="text-sm font-medium text-gray-500 mb-2">Progresso</h3>
               <div class="w-full  rounded-full h-2.5 mb-2">
                 <div class="bg-blue-600 h-2.5 rounded-full" :style="{ width: `${completionPercentage}%` }"></div>
               </div>
               <p class="text-sm ">{{ completionPercentage }}% concluído</p>
               
               <div class="mt-6">
-                <h3 class="text-sm font-medium  mb-2">Tarefas</h3>
+                <h3 class="text-sm font-medium text-gray-500 mb-2">Tarefas</h3>
                 <div class="flex items-center justify-between">
                   <div class="flex items-center text-sm ">
                     <ListChecks class="h-4 w-4 mr-2" />
@@ -269,7 +269,7 @@ const completionPercentage = computed(() => {
             </Link>
           </div>
           
-          <div v-if="!project.tasks || project.tasks.length === 0" class="text-center py-4 ">
+          <div v-if="!project.tasks || project.tasks.length === 0" class="text-center py-4 text-gray-500">
             <p>Nenhuma tarefa encontrada. Crie uma nova tarefa para começar.</p>
           </div>
           
@@ -288,7 +288,7 @@ const completionPercentage = computed(() => {
               <CardContent class="py-3">
                 <p class="text-sm text-gray-600 line-clamp-2">{{ task.description || 'Sem descrição' }}</p>
                 <div class="mt-2 flex justify-between items-center">
-                  <div class="flex items-center text-xs ">
+                  <div class="flex items-center text-xs text-gray-500">
                     <Clock class="h-3 w-3 mr-1" />
                     <span>Prazo: {{ formatDate(task.due_date) }}</span>
                   </div>
