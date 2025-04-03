@@ -240,7 +240,7 @@ const completionPercentage = computed(() => {
             <div>
               <h3 class="text-sm font-medium text-gray-500 mb-2">Progresso</h3>
               <div class="w-full  rounded-full h-2.5 mb-2">
-                <div class="bg-blue-600 h-2.5 rounded-full" :style="{ width: `${completionPercentage}%` }"></div>
+                <div class="h-2.5 rounded-full" :style="{ width: `${completionPercentage}%` }"></div>
               </div>
               <p class="text-sm ">{{ completionPercentage }}% concluído</p>
               
@@ -251,7 +251,7 @@ const completionPercentage = computed(() => {
                     <ListChecks class="h-4 w-4 mr-2" />
                     <span>{{ project.tasks ? project.tasks.length : 0 }} tarefas no total</span>
                   </div>
-                  <Link :href="route('projects.tasks.index', project.id)" class="text-sm text-blue-600 hover:text-blue-800">
+                  <Link :href="route('projects.tasks.index', project.id)" class="text-sm  hover:text-blue-800">
                     Ver todas
                   </Link>
                 </div>
@@ -263,7 +263,7 @@ const completionPercentage = computed(() => {
         <div class="p-6 border-t border-gray-200">
           <div class="flex justify-between items-center mb-4">
             <h2 class="text-lg font-medium text-foreground">Tarefas Recentes</h2>
-            <Link :href="route('tasks.store')" method="get" class="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800">
+            <Link :href="route('tasks.store')" method="get" class="flex items-center gap-1 text-sm  hover:text-blue-800">
               <PlusCircle class="h-4 w-4" />
               Nova Tarefa
             </Link>
@@ -292,7 +292,7 @@ const completionPercentage = computed(() => {
                     <Clock class="h-3 w-3 mr-1" />
                     <span>Prazo: {{ formatDate(task.due_date) }}</span>
                   </div>
-                  <Link :href="route('tasks.show', task.id)" class="text-xs text-blue-600 hover:text-blue-800">
+                  <Link :href="route('tasks.show', task.id)" class="text-xs  hover:text-blue-800">
                     Ver detalhes
                   </Link>
                 </div>
@@ -300,7 +300,7 @@ const completionPercentage = computed(() => {
             </Card>
             
             <div v-if="project.tasks.length > 5" class="text-center pt-2">
-              <Link :href="route('projects.tasks.index', project.id)" class="text-sm text-blue-600 hover:text-blue-800">
+              <Link :href="route('projects.tasks.index', project.id)" class="text-sm  hover:text-blue-800">
                 Ver todas as {{ project.tasks.length }} tarefas
               </Link>
             </div>
