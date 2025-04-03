@@ -41,6 +41,7 @@ const showEditDialog = ref(false);
 const showDeleteDialog = ref(false);
 const showLogHoursDialog = ref(false);
 const showCommentDialog = ref(false);
+const currentReplyCommentId = ref<number | null>(null);
 
 const form = useForm({
   title: props.task.title,
@@ -104,47 +105,55 @@ const submitComment = () => {
       showCommentDialog.value = false;
       commentForm.reset();
       commentForm.task_id = props.task.id;
+      commentForm.parent_id = null;
+      currentReplyCommentId.value = null;
     }
   });
 };
 
+const replyToComment = (commentId: number) => {
+  currentReplyCommentId.value = commentId;
+  commentForm.parent_id = commentId;
+  showCommentDialog.value = true;
+};
+
 const statusOptions = [
-  { value: 'pending', label: 'Pendente' },
-  { value: 'in_progress', label: 'Em Progresso' },
-  { value: 'completed', label: 'Concluída' },
-  { value: 'blocked', label: 'Bloqueada' }
-];
+  { value: 'pending' as const, label: 'Pendente' },
+  { value: 'in_progress' as const, label: 'Em Progresso' },
+  { value: 'completed' as const, label: 'Concluída' },
+  { value: 'blocked' as const, label: 'Bloqueada' }
+] as const;
 
 const priorityOptions = [
-  { value: 'low', label: 'Baixa' },
-  { value: 'medium', label: 'Média' },
-  { value: 'high', label: 'Alta' },
-  { value: 'urgent', label: 'Urgente' }
-];
+  { value: 'low' as const, label: 'Baixa' },
+  { value: 'medium' as const, label: 'Média' },
+  { value: 'high' as const, label: 'Alta' },
+  { value: 'urgent' as const, label: 'Urgente' }
+] as const;
 
-const getStatusClass = (status) => {
+const getStatusClass = (status: typeof statusOptions[number]['value']) => {
   const statusClasses = {
-    'pending': 'bg-yellow-100 text-yellow-800',
-    'in_progress': 'bg-blue-100 text-blue-800',
-    'completed': 'bg-green-100 text-green-800',
-    'blocked': 'bg-red-100 text-red-800'
+    pending: 'bg-yellow-100 text-yellow-800',
+    in_progress: 'bg-blue-100 text-blue-800',
+    completed: 'bg-green-100 text-green-800',
+    blocked: 'bg-red-100 text-red-800'
   };
   
   return statusClasses[status] || 'bg-gray-100 text-gray-800';
 };
 
-const getPriorityClass = (priority) => {
+const getPriorityClass = (priority: typeof priorityOptions[number]['value']) => {
   const priorityClasses = {
-    'low': 'bg-green-50 text-green-700',
-    'medium': 'bg-blue-50 text-blue-700',
-    'high': 'bg-orange-50 text-orange-700',
-    'urgent': 'bg-red-50 text-red-700'
+    low: 'bg-green-50 text-green-700',
+    medium: 'bg-blue-50 text-blue-700',
+    high: 'bg-orange-50 text-orange-700',
+    urgent: 'bg-red-50 text-red-700'
   };
   
   return priorityClasses[priority] || 'bg-gray-50 text-gray-700';
 };
 
-const formatDate = (dateString) => {
+const formatDate = (dateString: string | null | undefined) => {
   if (!dateString) return 'Não definida';
   
   const date = new Date(dateString);
@@ -161,7 +170,7 @@ const priorityLabel = computed(() => {
   return priority ? priority.label : 'Desconhecida';
 });
 
-const getStatusIcon = (status) => {
+const getStatusIcon = (status: typeof statusOptions[number]['value']) => {
   switch (status) {
     case 'pending':
       return PauseCircle;
@@ -180,7 +189,7 @@ const StatusIcon = computed(() => {
   return getStatusIcon(props.task.status);
 });
 
-const formatDateTime = (dateString) => {
+const formatDateTime = (dateString: string | null | undefined) => {
   if (!dateString) return '';
   
   const date = new Date(dateString);
@@ -504,7 +513,7 @@ const formatDateTime = (dateString) => {
               </div>
               
               <div class="mt-2 text-right">
-                <Button variant="ghost" size="sm" class="text-xs">
+                <Button variant="ghost" size="sm" class="text-xs" @click="replyToComment(comment.id)">
                   <MessageSquare class="h-3 w-3 mr-1" />
                   Responder
                 </Button>
