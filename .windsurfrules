@@ -1,359 +1,74 @@
-Guia de Regras para Desenvolvimento Laravel
+# Guia de Regras para Desenvolvimento Laravel
 
-Use FormRequest for validation.
-Name with Create, Update and Delete.
+## Parâmetros Personalizáveis por Projeto
+- **Biblioteca de UI Frontend**: Pode ser personalizada entre shadcn/vue (padrão), Prime Vue ou Vuetify
+- **Estilo CSS**: Tailwind CSS (padrão)
+- **Framework Frontend**: Vue.js (padrão)
 
+## Regras Fundamentais
+- Sempre usar **FormRequest** para validação
+- Criar FormRequests individuais para cada operação: Create, Update e Delete
+- Sempre usar `::create()` para criar modelos e nunca `new Model()`
+- Nunca reutilizar o mesmo FormRequest para diferentes operações
 
-1. Code Style
-Convenções de Nomenclatura
+## 1. Code Style
+### Convenções de Nomenclatura
+- **Variáveis**: sempre usar snake_case
+- **Métodos**: sempre usar camelCase
+- **Classes**: sempre iniciar com letra maiúscula
+- **Nomes**: usar sempre nomes descritivos que indiquem claramente a função
 
-Variáveis: sempre usar snake_case
-phpCopiar$user_name = 'João';
-$total_items = 10;
+### Classes Estáticas e Tipagem
+- **Classes de Serviço**: sempre criar como classes estáticas
+- **Tipagem de Parâmetros**: sempre tipar todos os parâmetros e retornos
 
-Métodos: sempre usar camelCase
-phpCopiarpublic function getUserData(): array
-{
-    // código aqui
-}
+## 2. Arquitetura de Pastas
+### Estrutura Principal
+- Organizar Controllers, Requests, Models e Services em subpastas por contexto
+- Criar FormRequests específicos para cada operação (Create/Update/Delete)
 
-public function criarTarefa(string $titulo, string $descricao): bool
-{
-    // código aqui
-}
+### Serviços
+- Todos os serviços devem ficar dentro da pasta `/app/Services`
+- Cada funcionalidade deve ter seu próprio serviço, dividindo ao máximo
+- Cada serviço deve ter responsabilidade única
 
-Classes: sempre iniciar com letra maiúscula
-phpCopiarclass UserController
-{
-    // código aqui
-}
+### Agrupamento de Componentes
+- Componentes relacionados devem ficar em pastas correspondentes
+- Exemplo: Models, Controllers e Requests de Blog ficam em subpastas chamadas Blog
 
-Nomes: usar sempre nomes descritivos que indiquem claramente a função
-phpCopiar// Bom
-$active_users = User::where('status', 'active')->get();
+## 3. Pacotes Padrões Laravel
+### Autenticação
+- Sempre usar Laravel Sanctum para autenticação e APIs
 
-// Ruim
-$data = User::where('status', 'active')->get();
+### Gerenciamento de Permissões
+- Sempre usar Spatie Permissions para controle de acesso
 
+### Exportação de Planilhas
+- Sempre usar Laravel Excel para exportação/importação de planilhas
+- Criar views dedicadas para exportação dentro da pasta resources/views/excel
 
-Classes Estáticas e Tipagem
+### Geração de PDFs
+- Usar LaravelDomPDF para geração de PDFs
 
-Classes de Serviço: sempre criar como classes estáticas
-phpCopiarclass PostService
-{
-    public static function criarPost(array $data): Post
-    {
-        // lógica para criar post
-    }
-    
-    public static function atualizarPost(int $id, array $data): bool
-    {
-        // lógica para atualizar post
-    }
-}
+## 4. Frontend
+### Tecnologias
+- **Framework**: Vue.js
+- **CSS**: Tailwind CSS
+- **Biblioteca de UI**: Definida por projeto (shadcn/vue, Prime Vue ou Vuetify)
 
-Tipagem de Parâmetros: sempre tipar todos os parâmetros e retornos
-phpCopiarpublic static function buscarUsuarioPorEmail(string $email): ?User
-{
-    // código aqui
-}
+### Regras para Componentes Frontend
+- **Nunca adicionar estilos extras** que não sejam da biblioteca de UI escolhida
+- **Sempre usar os componentes existentes** da biblioteca de UI selecionada
+- Componentes devem ser funcionais sem adicionar estilização personalizada
 
-public static function calcularTotal(float $valor, float $taxa): float
-{
-    return $valor * (1 + $taxa);
-}
+### Organização de Componentes
+- Sempre dividir a interface em componentes mesmo que não sejam reutilizados
+- Criar componentes por contexto ou responsabilidade
 
-public static function processarItens(array $items): array
-{
-    // processamento
-    return $resultado;
-}
+## 5. Testes
+- Sempre usar Pest PHP para testes
+- Criar testes de feature para todas as funcionalidades
+- Cada endpoint deve ter pelo menos um teste de feature correspondente
+- Priorizar cobertura de teste para os fluxos críticos da aplicação
+- Seguir a estrutura de pastas padrão do Pest para organização dos testes
 
-Exemplo completo de classe estática com tipagem:
-phpCopiarclass CategoriaService
-{
-    public static function criar(string $nome, string $descricao): Category
-    {
-        $categoria = new Category();
-        $categoria->nome = $nome;
-        $categoria->descricao = $descricao;
-        $categoria->save();
-        
-        return $categoria;
-    }
-    
-    public static function buscarPorSlug(string $slug): ?Category
-    {
-        return Category::where('slug', $slug)->first();
-    }
-    
-    public static function listarAtivas(): array
-    {
-        return Category::where('ativa', true)->get()->toArray();
-    }
-    
-    public static function atualizar(int $id, array $dados): bool
-    {
-        $categoria = Category::find($id);
-        
-        if (!$categoria) {
-            return false;
-        }
-        
-        return $categoria->update($dados);
-    }
-}
-
-
-2. Arquitetura de Pastas
-Estrutura Principal
-Copiar/app
-  /Http
-    /Controllers
-      /Blog
-        CategoryController.php
-        PostController.php
-    /Requests
-      /Blog
-        CategoryRequest.php
-        PostRequest.php
-  /Models
-    /Blog
-      Category.php
-      Post.php
-  /Services
-    /Blog
-      CategoryService.php
-      PostService.php
-  /Repositories
-    /Blog
-      CategoryRepository.php
-      PostRepository.php
-Serviços
-
-Todos os serviços devem ser colocados dentro da pasta /app/Services
-Cada funcionalidade deve ter seu próprio serviço, dividindo ao máximo
-Exemplo: ao invés de ter um único BlogService, deve-se criar PostService e CategoryService separadamente
-Cada serviço deve ter responsabilidade única
-
-phpCopiar// PostService.php
-class PostService
-{
-    public static function criarPost(array $data): Post
-    {
-        // lógica para criar post
-    }
-    
-    public static function atualizarPost(int $id, array $data): bool
-    {
-        // lógica para atualizar post
-    }
-}
-
-// CategoryService.php
-class CategoryService
-{
-    public static function criarCategoria(string $nome, ?string $descricao = null): Category
-    {
-        // lógica para criar categoria
-    }
-    
-    public static function getCategoriasByPost(int $post_id): array
-    {
-        // lógica para obter categorias de um post
-    }
-}
-Agrupamento de Componentes
-
-Relacionados devem ficar em pastas correspondentes
-Exemplo: Models, Controllers e Requests de Blog devem ficar em subpastas chamadas Blog
-
-Copiar/app/Models/Blog/Post.php
-/app/Models/Blog/Category.php
-/app/Http/Controllers/Blog/PostController.php
-/app/Http/Controllers/Blog/CategoryController.php
-3. Pacotes Padrões Laravel
-Autenticação
-
-Sempre usar Laravel Sanctum para autenticação e APIs
-
-bashCopiarcomposer require laravel/sanctum
-php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
-php artisan migrate
-Gerenciamento de Permissões
-
-Sempre usar Spatie Permissions para controle de acesso
-
-bashCopiarcomposer require spatie/laravel-permission
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan migrate
-Exportação de Planilhas
-
-Sempre usar Laravel Excel para exportação/importação de planilhas
-
-bashCopiarcomposer require maatwebsite/excel
-
-Criar views dedicadas para exportação dentro da pasta resources/views/excel
-
-Copiar/resources/views/excel/users_export.blade.php
-/resources/views/excel/posts_export.blade.php
-phpCopiar// Exemplo de classe de exportação
-use Maatwebsite\Excel\Concerns\FromView;
-use Illuminate\Contracts\View\View;
-
-class PostsExport implements FromView
-{
-    public function view(): View
-    {
-        return view('excel.posts_export', [
-            'posts' => Post::all()
-        ]);
-    }
-}
-Geração de PDFs
-
-Usar LaravelDomPDF para geração de PDFs
-
-bashCopiarcomposer require barryvdh/laravel-dompdf
-4. Frontend
-Tecnologias
-
-Sempre usar Tailwind CSS para estilização
-Utilizar shadcn/vue para componentes de UI
-Implementar Vue.js como framework frontend
-
-Organização de Componentes
-
-Sempre dividir a interface em componentes mesmo que não sejam reutilizados
-Criar componentes por contexto ou responsabilidade
-Estrutura sugerida:
-
-Copiar/resources
-  /js
-    /components
-      /Blog
-        /Post
-          PostList.vue
-          PostItem.vue
-          PostForm.vue
-        /Category
-          CategorySelector.vue
-          CategoryBadge.vue
-      /Common
-        Button.vue
-        Card.vue
-        Modal.vue
-      /Layout
-        Sidebar.vue
-        Navbar.vue
-        Footer.vue
-Exemplos de Componentes
-Ao invés de criar uma única página para listagem de posts, divida em componentes menores por contexto.
-5. Controle de Estado
-
-Sempre criar um arquivo state.md na raiz do projeto
-Usar para documentar:
-
-O que está sendo feito atualmente
-O que já foi concluído
-O que ainda precisa ser feito
-Impedimentos encontrados
-
-
-
-Exemplo de state.md:
-markdownCopiar# Estado do Projeto
-
-## Em Andamento
-- Implementação do módulo de categorias
-- Testes unitários para o serviço de posts
-
-## Concluído
-- Autenticação com Sanctum
-- CRUD de usuários
-- Exportação de posts para Excel
-
-## Pendente
-- Implementação de permissões com Spatie
-- Geração de PDF para relatórios
-- Integração com API externa
-
-## Impedimentos
-- Problema de performance na listagem de posts com muitas categorias
-6. Documentação
-Ao finalizar cada módulo ou funcionalidade, criar documentação completa incluindo:
-Documentação de API
-
-Endpoints disponíveis
-Parâmetros de requisição
-Exemplos de resposta
-Códigos de status
-
-Documentação de Serviços
-
-Propósito de cada serviço
-Métodos disponíveis com suas assinaturas completas (incluindo tipos)
-Parâmetros e retornos esperados
-
-Documentação de Models
-
-Relacionamentos
-Atributos
-Escopos
-Mutators e Accessors
-
-Exemplo de Estrutura de Documentação
-markdownCopiar# Documentação do Módulo Blog
-
-## Models
-
-### Post
-- Relacionamentos:
-  - belongsTo Category
-  - belongsTo User (author)
-- Atributos:
-  - id: int
-  - title: string
-  - content: string
-  - slug: string
-  - published_at: ?datetime
-  - created_at: datetime
-  - updated_at: datetime
-
-### Category
-- Relacionamentos:
-  - hasMany Post
-- Atributos:
-  - id: int
-  - name: string
-  - slug: string
-  - created_at: datetime
-  - updated_at: datetime
-
-## Serviços
-
-### PostService
-- static criarPost(array $data): Post
-- static atualizarPost(int $id, array $data): bool
-- static deletarPost(int $id): bool
-- static publicarPost(int $id): bool
-
-### CategoryService
-- static criarCategoria(string $nome, ?string $descricao = null): Category
-- static getCategoriasByPost(int $post_id): array
-
-## API Endpoints
-
-### Posts
-- GET /api/posts: Lista todos os posts
-- GET /api/posts/{id}: Retorna um post específico
-- POST /api/posts: Cria um novo post
-- PUT /api/posts/{id}: Atualiza um post
-- DELETE /api/posts/{id}: Remove um post
-
-### Categorias
-- GET /api/categories: Lista todas as categorias
-- GET /api/categories/{id}: Retorna uma categoria específica
-- POST /api/categories: Cria uma nova categoria
-- PUT /api/categories/{id}: Atualiza uma categoria
-- DELETE /api/categories/{id}: Remove uma categoria
