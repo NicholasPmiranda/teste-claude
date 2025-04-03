@@ -9,15 +9,13 @@ class CommentService
 {
     public static function criar(string $content, int $task_id, ?int $parent_id = null, ?array $mentioned_users = null): Comment
     {
-        $comment = new Comment();
-        $comment->content = $content;
-        $comment->task_id = $task_id;
-        $comment->user_id = Auth::id();
-        $comment->parent_id = $parent_id;
-        $comment->mentioned_users = $mentioned_users;
-        $comment->save();
-        
-        return $comment;
+        return Comment::create([
+            'content' => $content,
+            'task_id' => $task_id,
+            'user_id' => Auth::id(),
+            'parent_id' => $parent_id,
+            'mentioned_users' => $mentioned_users
+        ]);
     }
     
     public static function atualizar(int $id, string $content, ?array $mentioned_users = null): bool

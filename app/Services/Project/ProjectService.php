@@ -9,16 +9,14 @@ class ProjectService
 {
     public static function criar(string $name, ?string $description = null, ?string $start_date = null, ?string $end_date = null): Project
     {
-        $project = new Project();
-        $project->name = $name;
-        $project->description = $description;
-        $project->start_date = $start_date;
-        $project->end_date = $end_date;
-        $project->status = 'pending';
-        $project->user_id = Auth::id();
-        $project->save();
-        
-        return $project;
+        return Project::create([
+            'name' => $name,
+            'description' => $description,
+            'start_date' => $start_date,
+            'end_date' => $end_date,
+            'status' => 'pending',
+            'user_id' => Auth::id()
+        ]);
     }
     
     public static function atualizar(int $id, array $dados): bool

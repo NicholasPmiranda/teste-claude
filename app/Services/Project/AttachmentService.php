@@ -15,19 +15,17 @@ class AttachmentService
         $filename = time() . '_' . $original_filename;
         $file_path = $file->storeAs('attachments/tasks/' . $task_id, $filename, 'public');
         
-        $attachment = new Attachment();
-        $attachment->filename = $filename;
-        $attachment->original_filename = $original_filename;
-        $attachment->file_path = $file_path;
-        $attachment->mime_type = $file->getMimeType();
-        $attachment->file_size = $file->getSize();
-        $attachment->task_id = $task_id;
-        $attachment->user_id = Auth::id();
-        $attachment->status = 'pending';
-        $attachment->version = self::getNextVersion($task_id, $original_filename);
-        $attachment->save();
-        
-        return $attachment;
+        return Attachment::create([
+            'filename' => $filename,
+            'original_filename' => $original_filename,
+            'file_path' => $file_path,
+            'mime_type' => $file->getMimeType(),
+            'file_size' => $file->getSize(),
+            'task_id' => $task_id,
+            'user_id' => Auth::id(),
+            'status' => 'pending',
+            'version' => self::getNextVersion($task_id, $original_filename)
+        ]);
     }
     
     public static function getNextVersion(int $task_id, string $original_filename): int

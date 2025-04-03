@@ -17,20 +17,18 @@ class TaskService
         ?float $estimated_hours = null,
         ?array $tags = null
     ): Task {
-        $task = new Task();
-        $task->title = $title;
-        $task->description = $description;
-        $task->project_id = $project_id;
-        $task->user_id = Auth::id();
-        $task->status = 'pending';
-        $task->start_date = $start_date;
-        $task->due_date = $due_date;
-        $task->priority = $priority;
-        $task->estimated_hours = $estimated_hours;
-        $task->tags = $tags;
-        $task->save();
-        
-        return $task;
+        return Task::create([
+            'title' => $title,
+            'description' => $description,
+            'project_id' => $project_id,
+            'user_id' => Auth::id(),
+            'status' => 'pending',
+            'start_date' => $start_date,
+            'due_date' => $due_date,
+            'priority' => $priority,
+            'estimated_hours' => $estimated_hours,
+            'tags' => $tags
+        ]);
     }
     
     public static function atualizar(int $id, array $dados): bool
