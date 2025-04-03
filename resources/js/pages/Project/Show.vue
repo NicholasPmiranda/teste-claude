@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup >
 import { ref, computed } from 'vue';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { Button } from '@/components/ui/button';
